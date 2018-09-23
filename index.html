@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>Quoth the Giphy</title>
+  <!-- link to bootstrap css -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous">
+  <!-- link to bootstrap js -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+    crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+    crossorigin="anonymous"></script>
+  <!-- link to my js logic -->
+  <!-- <script src="C:\Users\mpmks\Desktop\GIPHY_API\assets\logic.js"></script> -->
+</head>
+
+
+<body>
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-6">
+
+        <!-- STEP TWO: between the dashed lines below -->
+        <button data-animal="rabbit" type="button" class="btn btn-primary">rabbit</button>
+        <button data-animal="cat" type="button" class="btn btn-dark">cat</button>
+        <button data-animal="husky" type="button" class="btn btn-success">dog</button>
+        <button data-animal="quokka" type="button" class="btn btn-danger">quokka</button>
+        <button data-animal="lion" type="button" class="btn btn-warning">lion</button>
+        <button data-animal="red-panda" type="button" class="btn btn-info">red panda</button>
+        <button data-animal="fox" type="button" class="btn btn-light">fox</button>
+
+      </div>
+    </div>
+    <!--  -->
+    <div class="row">
+      <div class="col-lg-6">
+        <span id="gifs-appear-here"></span>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript">
+  // create buttons and link logic to api of GIPHY
+    $("button").on("click", function () {
+      // In this case, the "this" keyword refers to the button that was clicked
+      var person = $(this).attr("data-animal");
+
+      // Constructing a URL to search Giphy for the name of the person who said the quote
+      var queryURL = "https://api.giphy.com/v1/gifs/search?q=" +
+        person + "&api_key=dc6zaTOxFJmzC&limit=5";
+
+      // Performing our AJAX GET request
+      $.ajax({
+        url: queryURL,
+        method: "GET"
+      })
+        // After the data comes back from the API
+        .then(function (response) {
+          // Storing an array of results in the results variable
+          var results = response.data;
+
+          // Looping over every result item
+          for (var i = 0; i < results.length; i++) {
+
+            // Only taking action if the photo has an appropriate rating
+            if (results[i].rating !== "r" && results[i].rating !== "pg-13") {
+              // Creating a div for the gif
+              var gifDiv = $("<div>");
+
+              // Storing the result item's rating
+              var rating = results[i].rating;
+
+              // Creating a paragraph tag with the result item's rating
+              var p = $("<p>").text("Rating: " + rating);
+
+              // Creating an image tag
+              var animalImage = $("<img>");
+
+              // Giving the image tag an src attribute of a proprty pulled off the
+              // result item
+              animalImage.attr("src", results[i].images.fixed_height.url);
+
+              // Appending the paragraph and animalImage we created to the "gifDiv" div we created
+              gifDiv.append(p);
+              gifDiv.append(animalImage);
+
+              // Prepending the gifDiv to the "#gifs-appear-here" div in the HTML
+              $("#gifs-appear-here").prepend(gifDiv);
+            }
+          }
+        });
+    });
+
+  </script>
+
+</body>
+
+</html>
